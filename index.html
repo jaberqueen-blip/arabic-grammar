@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واحة لغتي | الجملة الاسمية والجملة الفعلية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #ff6b81; --secondary: #70a1ff; --accent: #ffa502; --card-bg: #ffffff; --text: #2f3542; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: linear-gradient(135deg, #ffeaa7, #fab1a0, #dfe6e9); min-height: 100vh; color: var(--text); padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        header { text-align: center; background: var(--card-bg); padding: 25px; border-radius: 20px; border: 4px dashed var(--primary); margin-bottom: 20px; }
+        header h1 { color: var(--primary); font-size: 2rem; margin-bottom: 8px; }
+        .lesson-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .rule-card { background: var(--card-bg); padding: 20px; border-radius: 18px; border-top: 6px solid; }
+        .rule-card.noun { border-color: var(--primary); }
+        .rule-card.verb { border-color: var(--secondary); }
+        .rule-card h2 { font-size: 1.4rem; margin-bottom: 10px; }
+        .rule-card.noun h2 { color: var(--primary); }
+        .rule-card.verb h2 { color: var(--secondary); }
+        .examples { background: #f8f9fa; border-radius: 10px; padding: 10px 15px; margin-top: 10px; }
+        .examples li { list-style: none; padding: 4px 0; font-weight: bold; color: #57606f; }
+        .quiz-section { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .question-card { background: #fdfaf6; border: 2px solid #f1f2f6; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
+        .question-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
+        .options-group { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 10px; border: none; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        .btn-noun { background: #ffeaa7; color: #d63031; }
+        .btn-verb { background: #81ecec; color: #0984e3; }
+        .feedback { font-weight: bold; padding: 8px; border-radius: 8px; display: none; margin-top: 8px; }
+        .feedback.correct { display: block; background: #d4edda; color: #155724; }
+        .feedback.wrong { display: block; background: #f8d7da; color: #721c24; }
+        .score-box { text-align: center; padding: 15px; background: #6c5ce7; color: white; border-radius: 15px; margin-top: 15px; font-size: 1.2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌸 واحة لغتي: الجملة الاسمية والجملة الفعلية 🌸</h1>
+            <p>مرحباً بطالبات الصف الرابع المبدعات! هيا نحدد نوع كل جملة.</p>
+        </header>
+
+        <section class="lesson-grid">
+            <div class="rule-card noun">
+                <h2>🌷 الجملة الاسمية</h2>
+                <p>تبدأ بـ <strong>اسم</strong>.</p>
+                <div class="examples">
+                    <ul>
+                        <li>الأسلاكُ موصولةٌ.</li>
+                        <li>الجهازُ جديدٌ.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="rule-card verb">
+                <h2>⚡ الجملة الفعلية</h2>
+                <p>تبدأ بـ <strong>فعل</strong>.</p>
+                <div class="examples">
+                    <ul>
+                        <li>وضعَ حسنٌ الشريطَ.</li>
+                        <li>نادى حسنٌ أختَهُ.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="quiz-section">
+            <h2 style="color: var(--accent); margin-bottom: 15px; text-align: center;">⭐ تمرين التحدي ⭐</h2>
+            <div id="quiz-container"></div>
+            <div class="score-box">الدرجة: <span id="score">0</span> من <span id="total">5</span> 🌟</div>
+        </section>
+    </div>
+
+    <script>
+        const questions = [
+            { text: "فرحَ العالمُ بنجاحِ تجربتهِ.", type: "فعلية", reason: "بدأت بالفعل (فرحَ)" },
+            { text: "فاطمةُ فازت في المسابقةِ العلميَّةِ.", type: "اسمية", reason: "بدأت بالاسم (فاطمةُ)" },
+            { text: "غزا الإنسانُ الفضاءَ.", type: "فعلية", reason: "بدأت بالفعل (غزا)" },
+            { text: "الدولُ الكبرى تتسابقُ لاكتشافِ أسرارِ الكونِ.", type: "اسمية", reason: "بدأت بالاسم (الدولُ)" },
+            { text: "اشتركَ مُحمَّدٌ في النادي العلميِّ.", type: "فعلية", reason: "بدأت بالفعل (اشتركَ)" }
+        ];
+
+        let score = 0, answered = {};
+        const container = document.getElementById("quiz-container");
+        document.getElementById("total").textContent = questions.length;
+
+        questions.forEach((q, i) => {
+            const card = document.createElement("div");
+            card.className = "question-card";
+            card.innerHTML = `
+                <div class="question-text">${i + 1}. «${q.text}»</div>
+                <div class="options-group">
+                    <button class="btn btn-noun" onclick="check(${i}, 'اسمية')">اسمية 🌸</button>
+                    <button class="btn btn-verb" onclick="check(${i}, 'فعلية')">فعلية ⚡</button>
+                </div>
+                <div class="feedback" id="fb-${i}"></div>
+            `;
+            container.appendChild(card);
+        });
+
+        function check(i, choice) {
+            if (answered[i]) return;
+            const q = questions[i], fb = document.getElementById("fb-" + i);
+            if (choice === q.type) {
+                fb.className = "feedback correct";
+                fb.innerText = "أحسنتِ! إجابة صحيحة لأنها " + q.reason;
+                score++;
+            } else {
+                fb.className = "feedback wrong";
+                fb.innerText = "إجابة غير صحيحة! هي (" + q.type + ") لأنها " + q.reason;
+            }
+            answered[i] = true;
+            document.getElementById("score").innerText = score;
+        }
+    </script>
+</body>
+</html>
