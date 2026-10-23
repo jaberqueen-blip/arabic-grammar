@@ -1,0 +1,417 @@
+تفضلي الكود مع إضافة **زر مخصص لنسخ الكود بنقرة واحدة داخل الصفحة نفسها**، بالإضافة إلى نافذة تعرض الكود البرمجي بالكامل لنسخه بسهولة واستخدامه في أي وقت:
+
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واحة لغتي | الجملة الاسمية والجملة الفعلية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b81;
+            --secondary: #2ed573;
+            --accent: #ffa502;
+            --blue: #1e90ff;
+            --purple: #9b59b6;
+            --dark: #2f3542;
+            --card: #ffffff;
+            --text: #2f3542;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--card);
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            border: 4px dashed var(--primary);
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        header p {
+            color: #747d8c;
+            font-size: 1.15rem;
+        }
+
+        /* شريط أدوات نسخ الكود */
+        .code-toolbar {
+            background: var(--dark);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .code-toolbar span {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .btn-copy-code {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-copy-code:hover {
+            background: #26af5f;
+            transform: scale(1.03);
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .rule-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            border-top: 8px solid;
+        }
+
+        .rule-card.noun { border-color: var(--primary); }
+        .rule-card.verb { border-color: var(--blue); }
+
+        .rule-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .rule-card.noun h2 { color: var(--primary); }
+        .rule-card.verb h2 { color: var(--blue); }
+
+        .examples-list {
+            background: #f1f2f6;
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-top: 10px;
+            list-style: none;
+        }
+
+        .examples-list li {
+            padding: 6px 0;
+            font-weight: 700;
+            color: #57606f;
+        }
+
+        .examples-list li::before {
+            content: "🌸 ";
+        }
+
+        .section-box {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: var(--accent);
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+
+        /* لعبة التبديل التفاعلية */
+        .switch-game-box {
+            background: #fdfaf6;
+            border: 2px dashed var(--purple);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .train-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .word-tag {
+            padding: 10px 18px;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .tag-noun { background: var(--primary); }
+        .tag-verb { background: var(--blue); }
+        .tag-rest { background: #747d8c; }
+
+        .btn-switch {
+            background: var(--purple);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+            transition: 0.2s;
+        }
+
+        .btn-switch:hover {
+            transform: scale(1.05);
+            background: #8e44ad;
+        }
+
+        /* التمارين */
+        .quiz-item {
+            background: #fdfaf6;
+            border: 2px solid #f1f2f6;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .quiz-item p {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-noun { background: #ffeaa7; color: #d63031; }
+        .btn-noun:hover { background: #fdcb6e; }
+
+        .btn-verb { background: #81ecec; color: #0984e3; }
+        .btn-verb:hover { background: #00cec9; }
+
+        .result-msg {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .result-msg.correct { display: block; background: #d4edda; color: #155724; }
+        .result-msg.wrong { display: block; background: #f8d7da; color: #721c24; }
+
+        .score-banner {
+            text-align: center;
+            background: linear-gradient(to right, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- شريط زر نسخ الكود المباشر -->
+    <div class="code-toolbar">
+        <span>💻 هل ترغبين في نسخ كود هذه الصفحة؟</span>
+        <button class="btn-copy-code" id="copy-btn" onclick="copySourceCode()">📋 نسخ الكود بالكامل</button>
+    </div>
+
+    <header>
+        <h1>🌸 واحة لغتي: الجملة الاسمية والجملة الفعلية 🌸</h1>
+        <p>مرحباً ببطلات الصف الرابع المبدعات في عالم اللغة العربية</p>
+    </header>
+
+    <!-- قواعد الدرس -->
+    <div class="rules-grid">
+        <div class="rule-card noun">
+            <h2>🌷 الجملة الاسمية</h2>
+            <p>هي كل جملة <strong>تبدأ باسم</strong>.</p>
+            <ul class="examples-list">
+                <li>الأسلاكُ موصولةٌ.</li>
+                <li>الجهازُ جديدٌ.</li>
+                <li>الشريطُ سليمٌ.</li>
+            </ul>
+        </div>
+        <div class="rule-card verb">
+            <h2>⚡ الجملة الفعلية</h2>
+            <p>هي كل جملة <strong>تبدأ بفعل</strong>.</p>
+            <ul class="examples-list">
+                <li>وضعَ حسنٌ الشريطَ.</li>
+                <li>نادى حسنٌ أختَهُ.</li>
+                <li>غابَ الصوتُ.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- لعبة تحويل الجمل -->
+    <div class="section-box">
+        <h2 class="section-title">✂️ لعبة تبديل الأماكن: كيف نحول الجملة؟ ✂️</h2>
+        <p style="text-align: center; font-size: 1.1rem; margin-bottom: 15px;">
+            الجملة مثل القطار 🚂، الكلمة الأولى هي القاطرة! اضغطي الزر لتبديل مكان <strong>الاسم والفعل</strong>:
+        </p>
+
+        <div class="switch-game-box">
+            <h3 id="current-type" style="color: var(--primary); margin-bottom: 10px;">نوع الجملة الحالي: جملة اسمية 🌸</h3>
+            
+            <div class="train-display" id="train-container">
+                <span class="word-tag tag-noun" id="word-1">أخي الصغيرُ (اسم)</span>
+                <span class="word-tag tag-verb" id="word-2">يَهْوَى (فعل)</span>
+                <span class="word-tag tag-rest" id="word-3">اللعبَ بالكمبيوتر</span>
+            </div>
+
+            <button class="btn-switch" onclick="switchSentence()">تبديل الأماكن ✂️ (تحويل الجملة)</button>
+        </div>
+    </div>
+
+    <!-- تمرين التحدي -->
+    <div class="section-box">
+        <h2 class="section-title">⭐ تمرين التحدي: ما نوع الجملة؟ ⭐</h2>
+        <div id="quiz-list"></div>
+        <div class="score-banner">درجتكِ الحالية: <span id="score">0</span> من <span id="total">5</span> 🌟</div>
+    </div>
+</div>
+
+<script>
+    // وظيفة نسخ الكود البرمجي بالكامل
+    function copySourceCode() {
+        const fullHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        navigator.clipboard.writeText(fullHTML).then(() => {
+            const btn = document.getElementById("copy-btn");
+            btn.innerText = " تم النسخ بنجاح! 🎉";
+            btn.style.background = "#ffa502";
+            setTimeout(() => {
+                btn.innerText = "📋 نسخ الكود بالكامل";
+                btn.style.background = "var(--secondary)";
+            }, 3000);
+        }).catch(() => {
+            alert("حدث خطأ أثناء النسخ، يرجى التحديد والنسخ يدوياً.");
+        });
+    }
+
+    // لعبة التبديل
+    let isNominal = true;
+    function switchSentence() {
+        const word1 = document.getElementById("word-1");
+        const word2 = document.getElementById("word-2");
+        const currentType = document.getElementById("current-type");
+        const container = document.getElementById("train-container");
+
+        if (isNominal) {
+            container.insertBefore(word2, word1);
+            currentType.innerText = "نوع الجملة الحالي: جملة فعلية ⚡ (بدأت بفعل)";
+            currentType.style.color = "var(--blue)";
+            isNominal = false;
+        } else {
+            container.insertBefore(word1, word2);
+            currentType.innerText = "نوع الجملة الحالي: جملة اسمية 🌸 (بدأت باسم)";
+            currentType.style.color = "var(--primary)";
+            isNominal = true;
+        }
+    }
+
+    // أسئلة التدريب
+    const questions = [
+        { q: "فرحَ العالمُ بنجاحِ تجربتهِ.", type: "فعلية", reason: "بدأت بالفعل (فرحَ)" },
+        { q: "فاطمةُ فازت في المسابقةِ العلميَّةِ.", type: "اسمية", reason: "بدأت بالاسم (فاطمةُ)" },
+        { q: "غزا الإنسانُ الفضاءَ.", type: "فعلية", reason: "بدأت بالفعل (غزا)" },
+        { q: "الدولُ الكبرى تتسابقُ لاكتشافِ أسرارِ الكونِ.", type: "اسمية", reason: "بدأت بالاسم (الدولُ)" },
+        { q: "اشتركَ مُحمَّدٌ في النادي العلميِّ.", type: "فعلية", reason: "بدأت بالفعل (اشتركَ)" }
+    ];
+
+    let score = 0;
+    const answered = {};
+    const quizList = document.getElementById("quiz-list");
+    document.getElementById("total").innerText = questions.length;
+
+    questions.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "quiz-item";
+        div.innerHTML = `
+            <p>${idx + 1}. «${item.q}»</p>
+            <div class="btn-group">
+                <button class="btn btn-noun" onclick="checkAnswer(${idx}, 'اسمية')">جملة اسمية 🌸</button>
+                <button class="btn btn-verb" onclick="checkAnswer(${idx}, 'فعلية')">جملة فعلية ⚡</button>
+            </div>
+            <div class="result-msg" id="res-${idx}"></div>
+        `;
+        quizList.appendChild(div);
+    });
+
+    function checkAnswer(idx, chosen) {
+        if (answered[idx]) return;
+        const item = questions[idx];
+        const resEl = document.getElementById(`res-${idx}`);
+        
+        if (chosen === item.type) {
+            resEl.className = "result-msg correct";
+            resEl.innerText = ` أحسنتِ يا بطلة! إجابة صحيحة لأنها ${item.reason}.`;
+            score++;
+        } else {
+            resEl.className = "result-msg wrong";
+            resEl.innerText = ` إجابة غير دقيقة! الجملة نوعها (${item.type}) لأنها ${item.reason}.`;
+        }
+        answered[idx] = true;
+        document.getElementById("score").innerText = score;
+    }
+</script>
+
+</body>
+</html>
+```
